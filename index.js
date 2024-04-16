@@ -105,6 +105,11 @@ function addEvent(auth, event) {
   console.log("created event");
 };
 
+
+function createEvent (title, date) {
+
+};
+
 authorize().then((res) => {
   const event = {
     'summary': 'Test Event',
