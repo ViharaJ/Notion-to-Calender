@@ -3,9 +3,10 @@ import { join } from 'path';
 import { cwd } from 'process';
 import { authenticate } from '@google-cloud/local-auth';
 import { google } from 'googleapis';
+import "dotenv/config.js";
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
+const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -78,6 +79,7 @@ async function listEvents(auth) {
     singleEvents: true,
     orderBy: 'startTime',
   });
+
   const events = res.data.items;
   if (!events || events.length === 0) {
     console.log('No upcoming events found.');
@@ -90,4 +92,33 @@ async function listEvents(auth) {
   });
 }
 
-authorize().then(listEvents).catch(console.error);
+
+function addEvent(auth, event) {
+  const calendar = google.calendar({version: 'v3', auth});
+
+  calendar.events.insert({
+    auth: auth, 
+    calendarId: process.env.CALEN_ID,
+    resource: event
+  });
+
+  console.log("created event");
+};
+
+authorize().then((res) => {
+  const event = {
+    'summary': 'Test Event',
+    'start': {
+      'dateTime': '2024-04-21T14:15:00',
+      'timeZone': 'America/Vancouver'
+    },
+    'end': {
+      'dateTime': '2024-04-21T16:16:00',
+      'timeZone': 'America/Vancouver',
+    }
+  };
+  addEvent(res, event);
+});
+
+
+//authorize().then(listEvents(a, ee)).catch(console.error);
