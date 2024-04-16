@@ -107,7 +107,8 @@ function addEvent(auth, event) {
 
 
 function createEvent (title, date) {
-
+  //convert to ISO time
+  return;
 };
 
 authorize().then((res) => {
