@@ -4,6 +4,7 @@ import { cwd } from 'process';
 import { authenticate } from '@google-cloud/local-auth';
 import { google } from 'googleapis';
 import "dotenv/config.js";
+import { create } from 'domain';
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
@@ -66,31 +67,6 @@ async function authorize() {
   return client;
 }
 
-/**
- * Lists the next 10 events on the user's primary calendar.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-async function listEvents(auth) {
-  const calendar = google.calendar({version: 'v3', auth});
-  const res = await calendar.events.list({
-    calendarId: 'primary',
-    timeMin: new Date().toISOString(),
-    maxResults: 10,
-    singleEvents: true,
-    orderBy: 'startTime',
-  });
-
-  const events = res.data.items;
-  if (!events || events.length === 0) {
-    console.log('No upcoming events found.');
-    return;
-  }
-  console.log('Upcoming 10 events:');
-  events.map((event, i) => {
-    const start = event.start.dateTime || event.start.date;
-    console.log(`${start} - ${event.summary}`);
-  });
-}
 
 
 function addEvent(auth, event) {
@@ -105,26 +81,33 @@ function addEvent(auth, event) {
   console.log("created event");
 };
 
-
+/**
+ * title: title movie
+ * date: format month day, year
+ */
 function createEvent (title, date) {
-  //convert to ISO time
-  return;
-};
+  // convert to ISO time
+  const startTime = new Date(date + ' 08:00:00').toISOString();
+  const lastTime = new Date(date + ' 010:00:00').toISOString()
 
-authorize().then((res) => {
-  const event = {
-    'summary': 'Test Event',
+  return {
+    'summary': title, 
     'start': {
-      'dateTime': '2024-04-21T14:15:00',
+      'dateTime': startTime,
       'timeZone': 'America/Vancouver'
     },
     'end': {
-      'dateTime': '2024-04-21T16:16:00',
-      'timeZone': 'America/Vancouver',
+      'dateTime': lastTime,
+      'timeZone': 'America/Vancouver'
     }
-  };
+  }
+
+};
+
+
+
+authorize().then((res) => {
+  const event = createEvent("DUNNNEE", "April 19, 2024");
   addEvent(res, event);
 });
 
-
-//authorize().then(listEvents(a, ee)).catch(console.error);
