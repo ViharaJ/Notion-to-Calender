@@ -1,7 +1,6 @@
 import puppeteer from 'puppeteer';
-import * as cheerio from 'cheerio';
 
-async function findPage(title) {
+async function scrapeDate(title) {
     const browser = await puppeteer.launch({headless: 'new'});
     const page = await browser.newPage();
 
@@ -11,31 +10,18 @@ async function findPage(title) {
     await page.keyboard.press('Enter');
     await page.waitForNavigation();
 
-    await page.screenshot({path: "example.png", fullPage:true});
-
-    const pageToScrape = page.url();
-    await browser.close();
-
-    return pageToScrape;
-}
-
-
-async function scrapeDate(url) {
-    const res = await fetch(url);
-    const htmlPage = await res.text();
-
-    const $ = cheerio.load(htmlPage);
-    let relDate = $('.LrzXr.kno-fv.wHYlTd.z8gr9e').contents();
-
-    const fruits = [];
-
-    $('li').each(function (i, elem) {
-    fruits[i] = $(this).text();
+    const relDate = await page.evaluate(() => {
+        let t = document.querySelector(".LrzXr.kno-fv.wHYlTd.z8gr9e");
+        return t.innerText;
     });
 
-    fruits.join(', ');
+    await browser.close();
 
-    console.log(fruits);
+    //if relDate is empty, crawl web?
+    return relDate;
+    
 }
 
-findPage("Challengers").then(scrapeDate);
+
+
+scrapeDate("Challengers").then((res) => {console.log(res);});

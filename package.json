@@ -3,6 +3,7 @@
     "@google-cloud/local-auth": "^2.1.0",
     "@notionhq/client": "^2.2.14",
     "cheerio": "^1.0.0-rc.12",
+    "dom-parser": "^1.1.5",
     "dotenv": "^16.4.5",
     "googleapis": "^105.0.0",
     "puppeteer": "^22.6.5"
