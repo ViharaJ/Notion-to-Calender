@@ -20,5 +20,22 @@ async function findPage(title) {
 }
 
 
+async function scrapeDate(url) {
+    const res = await fetch(url);
+    const htmlPage = await res.text();
 
-findPage("Exhuma");
+    const $ = cheerio.load(htmlPage);
+    let relDate = $('.LrzXr.kno-fv.wHYlTd.z8gr9e').contents();
+
+    const fruits = [];
+
+    $('li').each(function (i, elem) {
+    fruits[i] = $(this).text();
+    });
+
+    fruits.join(', ');
+
+    console.log(fruits);
+}
+
+findPage("Challengers").then(scrapeDate);
