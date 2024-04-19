@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 
-async function scrapeDate(title) {
+export default async function scrapeDate(title) {
     const browser = await puppeteer.launch({headless: 'new'});
     const page = await browser.newPage();
 
@@ -18,10 +18,10 @@ async function scrapeDate(title) {
     await browser.close();
 
     //if relDate is empty, crawl web?
-    return relDate;
+    return {title, relDate};
     
 }
 
 
 
-scrapeDate("Challengers").then((res) => {console.log(res);});
+// scrapeDate("Challengers").then((res) => {console.log(res);});

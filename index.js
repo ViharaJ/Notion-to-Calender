@@ -4,7 +4,8 @@ import { cwd } from 'process';
 import { authenticate } from '@google-cloud/local-auth';
 import { google } from 'googleapis';
 import "dotenv/config.js";
-
+import getDatabaseContents from './notion.js';
+import scrapeDate from './puppeteer.js';
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
@@ -89,8 +90,17 @@ function addEvent(auth, event) {
  */
 function createEvent (title, date) {
   // convert to ISO time
-  const startTime = new Date(date + ' 08:00:00').toISOString();
-  const lastTime = new Date(date + ' 010:00:00').toISOString()
+  let startTime;
+  let lastTime;
+  try {
+    startTime = new Date(date + ' 08:00:00').toISOString();
+    lastTime = new Date(date + ' 010:00:00').toISOString()
+
+  } catch (err) {
+    console.log("Invalid date");
+    return;
+  }
+  
 
   return {
     'summary': title, 
@@ -108,8 +118,19 @@ function createEvent (title, date) {
 
 
 
-authorize().then((res) => {
-  const event = createEvent("DUNNNEE", "April 19, 2024");
-  addEvent(res, event);
+authorize().then(async (res) => {
+  let movies = await getDatabaseContents();
+  let fullRes = [];
+
+  for (const m of movies) {
+    let r = await scrapeDate(m);
+    fullRes.push(r); 
+  };
+
+  fullRes.forEach((ob) => {
+    const event = createEvent(ob.title, ob.relDate);
+    addEvent(res, event);
+  })
+
 });
 
