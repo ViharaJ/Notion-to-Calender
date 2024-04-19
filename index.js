@@ -4,7 +4,7 @@ import { cwd } from 'process';
 import { authenticate } from '@google-cloud/local-auth';
 import { google } from 'googleapis';
 import "dotenv/config.js";
-import { create } from 'domain';
+
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
@@ -48,6 +48,7 @@ async function saveCredentials(client) {
   await fs.writeFile(TOKEN_PATH, payload);
 }
 
+
 /**
  * Load or request or authorization to call APIs.
  *
@@ -77,9 +78,10 @@ function addEvent(auth, event) {
     calendarId: process.env.CALEN_ID,
     resource: event
   });
-
-  console.log("created event");
 };
+
+
+
 
 /**
  * title: title movie
