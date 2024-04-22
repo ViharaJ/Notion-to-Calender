@@ -59,10 +59,12 @@ async function authorize() {
   if (client) {
     return client;
   }
+  
   client = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
   });
+
   if (client.credentials) {
     await saveCredentials(client);
   }
@@ -71,7 +73,7 @@ async function authorize() {
 
 
 
-function addEvent(auth, event) {
+export function addEvent(auth, event) {
   const calendar = google.calendar({version: 'v3', auth});
 
   calendar.events.insert({
@@ -88,7 +90,7 @@ function addEvent(auth, event) {
  * title: title movie
  * date: format month day, year
  */
-function createEvent (title, date) {
+export function createEvent (title, date) {
   // convert to ISO time
   let startTime;
   let lastTime;
@@ -97,10 +99,12 @@ function createEvent (title, date) {
     lastTime = new Date(date + ' 010:00:00').toISOString()
 
   } catch (err) {
-    console.log("Invalid date");
-    return;
+    throw new Error("Invalid date");
   }
-  
+
+  if (new Date().toISOString() > startTime) {
+    throw new Error("Invalid date");
+  }
 
   return {
     'summary': title, 
@@ -118,19 +122,19 @@ function createEvent (title, date) {
 
 
 
-authorize().then(async (res) => {
-  let movies = await getDatabaseContents();
-  let fullRes = [];
+// authorize().then(async (res) => {
+//   let movies = await getDatabaseContents();
+//   let fullRes = [];
 
-  for (const m of movies) {
-    let r = await scrapeDate(m);
-    fullRes.push(r); 
-  };
+//   for (const m of movies) {
+//     let r = await scrapeDate(m);
+//     fullRes.push(r); 
+//   };
 
-  fullRes.forEach((ob) => {
-    const event = createEvent(ob.title, ob.relDate);
-    addEvent(res, event);
-  })
+//   fullRes.forEach((ob) => {
+//     const event = createEvent(ob.title, ob.relDate);
+//     addEvent(res, event);
+//   })
 
-});
+// });
 
