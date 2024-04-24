@@ -59,7 +59,7 @@ async function authorize() {
   if (client) {
     return client;
   }
-  
+
   client = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
@@ -90,10 +90,11 @@ export function addEvent(auth, event) {
  * title: title movie
  * date: format month day, year
  */
-export function createEvent (title, date) {
+export function createEvent (title, date, timeZone) {
   // convert to ISO time
   let startTime;
   let lastTime;
+
   try {
     startTime = new Date(date + ' 08:00:00').toISOString();
     lastTime = new Date(date + ' 010:00:00').toISOString()
@@ -110,21 +111,31 @@ export function createEvent (title, date) {
     'summary': title, 
     'start': {
       'dateTime': startTime,
-      'timeZone': 'America/Vancouver'
+      'timeZone': timeZone
     },
     'end': {
       'dateTime': lastTime,
-      'timeZone': 'America/Vancouver'
+      'timeZone': timeZone
     }
   }
 
 };
+
+/**
+ * Get timezone of main calender
+ */
+async function getTimeZone(auth) {
+  const calendar = google.calendar({version: 'v3', auth});
+  const res = await calendar.calendars.get({calendarId:'primary'});
+  return res.data.timeZone;
+}
 
 
 
 // authorize().then(async (res) => {
 //   let movies = await getDatabaseContents();
 //   let fullRes = [];
+//   let timeZ = getTimeZone(res);
 
 //   for (const m of movies) {
 //     let r = await scrapeDate(m);
