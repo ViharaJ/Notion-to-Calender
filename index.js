@@ -6,6 +6,8 @@ import { google } from 'googleapis';
 import "dotenv/config.js";
 import getDatabaseContents from './notion.js';
 import scrapeDate from './puppeteer.js';
+import { timeZonesNames } from "@vvo/tzdb";
+import { time } from 'console';
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
@@ -104,7 +106,11 @@ export function createEvent (title, date, timeZone) {
   }
 
   if (new Date().toISOString() > startTime) {
-    throw new Error("Invalid date");
+    throw new Error("This movie has already been released");
+  }
+
+  if (!isValidTimeZone(timeZone)) {
+    throw new Error("Invalid timezone");
   }
 
   return {
@@ -120,6 +126,10 @@ export function createEvent (title, date, timeZone) {
   }
 
 };
+
+export function isValidTimeZone (tz) {
+  return timeZonesNames.includes(tz);
+}
 
 /**
  * Get timezone of main calender
