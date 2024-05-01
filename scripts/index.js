@@ -156,22 +156,22 @@ async function getTimeZone(auth) {
 
 
 
-// authorize().then(async (res) => {
-//   let movies = await getDatabaseContents();
-//   let fullRes = [];
-//   let timeZ = getTimeZone(res);
+authorize().then(async (res) => {
+  let movies = await getDatabaseContents();
+  let fullRes = [];
+  let timeZ = getTimeZone(res);
 
-//   for (const m of movies) {
-//     let r = await scrapeDate(m);
-//     fullRes.push(r); 
-//   };
+  for (const m of movies) {
+    let r = await scrapeDate(m);
+    fullRes.push(r); 
+  };
 
-//   fullRes.forEach(async (ob) => {
-//     if (!(await checkIfEventExists(res, ob.title, ob.relDate))){
-//       const event = createEvent(ob.title, ob.relDate, timeZ);
-//       addEvent(res, event); 
-//     }
-//   });
+  fullRes.forEach(async (ob) => {
+    if (!(await checkIfEventExists(res, ob.title, ob.relDate))){
+      const event = createEvent(ob.title, ob.relDate, timeZ);
+      addEvent(res, event); 
+    }
+  });
 
-// });
+});
 

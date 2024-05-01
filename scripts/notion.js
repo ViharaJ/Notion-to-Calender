@@ -55,7 +55,4 @@ async function getMovieTitle(pageId) {
 };
 
 
-// getDatabaseContents().then((res) => {
-//     console.log(res);
-// });
 

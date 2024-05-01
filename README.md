@@ -1,3 +1,2 @@
-To-do 
-- Incremental requests
+- error check
 
