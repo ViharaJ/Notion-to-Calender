@@ -7,9 +7,7 @@ import "dotenv/config.js";
 import getDatabaseContents from './notion.js';
 import scrapeDate from './puppeteer.js';
 import { timeZonesNames } from "@vvo/tzdb";
-import { time } from 'console';
 
-// If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
@@ -86,6 +84,22 @@ export function addEvent(auth, event) {
 };
 
 
+async function checkIfEventExists(auth, title, date){
+  const calendar = google.calendar({version: 'v3', auth});
+  const res = await calendar.events.list({
+    calendarId: process.env.CALEN_ID,
+    timeMin: new Date(date).toISOString()
+  });
+  const events = res.data.items;
+
+  for (const e of events){
+    if (e.summary === title){
+      return true;
+    }
+  };
+
+  return false;
+}
 
 
 /**
@@ -152,10 +166,12 @@ async function getTimeZone(auth) {
 //     fullRes.push(r); 
 //   };
 
-//   fullRes.forEach((ob) => {
-//     const event = createEvent(ob.title, ob.relDate);
-//     addEvent(res, event);
-//   })
+//   fullRes.forEach(async (ob) => {
+//     if (!(await checkIfEventExists(res, ob.title, ob.relDate))){
+//       const event = createEvent(ob.title, ob.relDate, timeZ);
+//       addEvent(res, event); 
+//     }
+//   });
 
 // });
 

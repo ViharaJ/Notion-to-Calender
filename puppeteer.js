@@ -12,9 +12,13 @@ export default async function scrapeDate(title) {
 
     const relDate = await page.evaluate(() => {
         let t = document.querySelector(".LrzXr.kno-fv.wHYlTd.z8gr9e");
-        return t.innerText;
+        
+        if (t == null){
+            return '-1';
+        } else return t.innerText;
     });
 
+    console.log(relDate);
     await browser.close();
 
     //if relDate is empty, crawl web?
@@ -24,4 +28,5 @@ export default async function scrapeDate(title) {
 
 
 
-// scrapeDate("Challengers").then((res) => {console.log(res);});
+// scrapeDate("Fall Risk Movie").then((res) => {console.log('done');});
+

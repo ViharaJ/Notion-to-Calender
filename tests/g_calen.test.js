@@ -1,4 +1,4 @@
-import {createEvent, isValidTimeZone} from './index.js';
+import {createEvent, isValidTimeZone} from '../index.js';
 
 test('Create event with invalid date', () => {
     const date = "18990401";
@@ -20,7 +20,6 @@ test('Create event with invalid date 3', () => {
     const date = "July 32, 2005";
     expect(() => {createEvent("Fake Title", date, 'America/Vancouver')}).toThrow("Invalid date");
 });
-
 
 test('invalid timezone', () => {
     const date = "July 12, 2025";
